@@ -6,39 +6,81 @@ import { SITE_CONFIG } from '@/lib/site-config'
 import { globalContent } from '@/editable/content/global.content'
 import { useEditableLocalAuthSession } from '@/editable/components/EditableLocalAuthForms'
 
+const footerColumns = [
+  {
+    title: 'Company',
+    links: [
+      { label: 'About', href: '/about' },
+      { label: 'Contact', href: '/contact' },
+    ],
+  },
+  {
+    title: 'Services',
+    links: [
+      { label: 'Media Distribution', href: '/search' }
+    ],
+  },
+  
+]
+
 export function EditableFooter() {
   const year = new Date().getFullYear()
   const { session, logout } = useEditableLocalAuthSession()
 
   return (
-    <footer className="border-t-8 border-[var(--slot4-accent)] bg-black text-white">
-      <div className="mx-auto max-w-[1440px] px-4 py-14 sm:px-6 lg:px-10 lg:py-20">
-        <div className="grid gap-12 lg:grid-cols-[1.2fr_.7fr_.7fr]">
+    <footer className="bg-[var(--slot4-page-bg)] text-[var(--slot4-page-text)]">
+      <div className="mx-auto max-w-[1440px] px-4 pt-14 sm:px-6 lg:px-10 lg:pt-20">
+       
+
+        <section className="grid gap-12 px-2 py-14 lg:grid-cols-[1.05fr_1.45fr] lg:py-16">
           <div>
-            <Link href="/" className="editorial-brand text-5xl font-black text-[var(--slot4-accent)] sm:text-6xl">{SITE_CONFIG.name}</Link>
-            <p className="mt-6 max-w-xl text-sm leading-7 text-white/62">{globalContent.footer?.description || SITE_CONFIG.description}</p>
-            <form action="/signup" className="mt-8 flex max-w-xl border border-white/35">
-              <input name="email" type="email" placeholder="Email for newsroom updates" className="min-w-0 flex-1 bg-transparent px-4 py-4 text-sm outline-none placeholder:text-white/40" />
-              <button className="bg-[var(--slot4-accent)] px-5 text-xs font-black uppercase tracking-[.14em]">Subscribe</button>
-            </form>
+            <div className="flex items-center gap-4">
+              <img src="/favicon.png" alt={`${SITE_CONFIG.name} logo`} className="h-16 w-16 shrink-0 object-contain sm:h-20 sm:w-20" />
+              <Link href="/" className="text-[2.5rem] font-light tracking-[-0.07em] text-[var(--slot4-accent)] sm:text-[3rem]">
+                {SITE_CONFIG.name}
+              </Link>
+            </div>
+            <p className="mt-5 max-w-md text-sm leading-7 text-[var(--slot4-muted-text)]">
+              Curated stories, distribution-ready updates, and searchable media assets presented through a polished editorial interface.
+            </p>
+           
           </div>
-          <div>
-            <h3 className="border-b border-white/25 pb-3 text-[10px] font-black uppercase tracking-[.22em] text-white/55">Explore</h3>
-            <div className="mt-4 grid gap-3">
-              <Link href="/search" className="group inline-flex items-center justify-between text-sm font-black uppercase tracking-[.08em] hover:text-[var(--slot4-accent)]">Archive<ArrowRight className="h-4 w-4" /></Link>
+
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {footerColumns.map((column) => (
+              <div key={column.title}>
+                <h3 className="text-sm font-black uppercase tracking-[0.18em] text-[var(--slot4-soft-muted-text)]">{column.title}</h3>
+                <div className="mt-5 grid gap-3">
+                  {column.links.map((link) => (
+                    <Link key={link.href} href={link.href} className="text-sm font-semibold transition hover:text-[var(--slot4-accent)]">
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="border-t border-[color:rgba(84,107,65,0.14)] py-6">
+          <div className="flex flex-col gap-3 text-sm text-[var(--slot4-muted-text)] md:flex-row md:items-center md:justify-between">
+            <p>© {year} {SITE_CONFIG.name}. Distribution stories and public media updates.</p>
+            <div className="flex flex-wrap gap-4">
+              {session ? (
+                <>
+                  <Link href="/create" className="font-semibold hover:text-[var(--slot4-accent)]">Publish</Link>
+                  <button type="button" onClick={logout} className="text-left font-semibold hover:text-[var(--slot4-accent)]">Sign Out</button>
+                </>
+              ) : (
+                <>
+                  <Link href="/login" className="font-semibold hover:text-[var(--slot4-accent)]">Sign In</Link>
+                  <Link href="/signup" className="font-semibold hover:text-[var(--slot4-accent)]">Create Account</Link>
+                </>
+              )}
             </div>
           </div>
-          <div>
-            <h3 className="border-b border-white/25 pb-3 text-[10px] font-black uppercase tracking-[.22em] text-white/55">Publication</h3>
-            <div className="mt-4 grid gap-3">
-              <Link href="/about" className="text-sm font-black uppercase tracking-[.08em] hover:text-[var(--slot4-accent)]">About</Link>
-              <Link href="/contact" className="text-sm font-black uppercase tracking-[.08em] hover:text-[var(--slot4-accent)]">Contact</Link>
-              {session ? <><Link href="/create" className="text-sm font-black uppercase tracking-[.08em] hover:text-[var(--slot4-accent)]">Publish</Link><button onClick={logout} className="text-left text-sm font-black uppercase tracking-[.08em] hover:text-[var(--slot4-accent)]">Logout</button></> : <><Link href="/login" className="text-sm font-black uppercase tracking-[.08em] hover:text-[var(--slot4-accent)]">Log in</Link><Link href="/signup" className="text-sm font-black uppercase tracking-[.08em] hover:text-[var(--slot4-accent)]">Subscribe</Link></>}
-            </div>
-          </div>
-        </div>
+        </section>
       </div>
-      <div className="border-t border-white/20 px-4 py-5 text-center text-[10px] font-black uppercase tracking-[.18em] text-white/45">© {year} {SITE_CONFIG.name}. Independent media and public information.</div>
     </footer>
   )
 }
